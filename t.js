@@ -1,6 +1,6 @@
 const { TextractClient, AnalyzeDocumentCommand } = require("@aws-sdk/client-textract");
 const fs = require('fs');
-const config = require('./config');
+
 
 // Configure the AWS SDK
 const awsConfig = {
