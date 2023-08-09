@@ -1,15 +1,14 @@
 const express = require("express");
 const fs = require("fs");
 const csv = require("csvtojson");
-const axios = require('axios');
+const axios = require("axios");
 const {
   TextractClient,
   AnalyzeDocumentCommand,
 } = require("@aws-sdk/client-textract");
 const multer = require("multer");
 const { extractPassportNumbersFromBuffer } = require("./t");
-const {extractPassportInfo} = require("./hjk")
-
+const { extractPassportInfo } = require("./hjk");
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -30,8 +29,11 @@ app.use(express.json());
 
 // Middleware for CORS (Cross-Origin Resource Sharing)
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000"); 
-  // res.setHeader("Access-Control-Allow-Origin", "https://passport-infocheck.vercel.app"); // Replace with the allowed domain
+  //res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://passport-infocheck.vercel.app"
+  ); // Replace with the allowed domain
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
@@ -54,7 +56,6 @@ const requireApiKey = (req, res, next) => {
     return res.status(401).json({ error: "Invalid API key." });
   }
 };
-
 
 const getText = (result, blocksMap) => {
   let text = "";
@@ -150,7 +151,6 @@ const extractKeyValuePairsFromDocument = async (buffer) => {
       const keyValues = getKeyValueRelationship(keyMap, valueMap, blockMap);
 
       // Convert key-value pairs to CSV format
-      
 
       return keyValues;
     }
@@ -164,13 +164,11 @@ const extractKeyValuePairsFromDocument = async (buffer) => {
 };
 async function extractTextFromDocument(buffer) {
   try {
-    
-
     const params = {
       Document: {
-        Bytes: buffer
+        Bytes: buffer,
       },
-      FeatureTypes: ["FORMS"] // You can adjust this based on your needs
+      FeatureTypes: ["FORMS"], // You can adjust this based on your needs
     };
 
     const command = new AnalyzeDocumentCommand(params);
@@ -178,7 +176,7 @@ async function extractTextFromDocument(buffer) {
 
     const lineText = [];
     for (const block of data.Blocks) {
-      if (block.BlockType === 'LINE') {
+      if (block.BlockType === "LINE") {
         lineText.push(block.Text);
       }
     }
@@ -190,39 +188,43 @@ async function extractTextFromDocument(buffer) {
   }
 }
 
-
 async function callChatGPTAPI(data1, data2) {
-  const string = JSON.stringify(data1)
-  const apiKey = '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';
+  const string = JSON.stringify(data1);
+  const apiKey = "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";
   const conversation = [
-    { role: 'system', content: 'You are a data extractor or arranger  you get input extracted from the amazon textextract using forms API which gives data in key-value pairs. The required data points are: Passport No., Given Name, SurName, DOB, Place of Issue, Issue Date, Expiry Date, Gender, Nationality, Place of Birth. Please provide only this key-value data in JSON format. you have passport number in text data please carefully provide that also and as data you get  passport of different countries' },
-    { role: 'user', content: `${string}, ${data2}` },
+    {
+      role: "system",
+      content:
+        "You are a data extractor or arranger  you get input extracted from the amazon textextract using forms API which gives data in key-value pairs. The required data points are: Passport No., Given Name, SurName, DOB, Place of Issue, Issue Date, Expiry Date, Gender, Nationality, Place of Birth. Please provide only this key-value data in JSON format. you have passport number in text data please carefully provide that also and as data you get  passport of different countries",
+    },
+    { role: "user", content: `${string}, ${data2}` },
   ];
-  const apiUrl = 'https://api.openai.com/v1/chat/completions';
+  const apiUrl = "https://api.openai.com/v1/chat/completions";
 
   try {
-    const response = await axios.post(apiUrl, {
-      model: 'gpt-3.5-turbo',
-      messages: conversation
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+    const response = await axios.post(
+      apiUrl,
+      {
+        model: "gpt-3.5-turbo",
+        messages: conversation,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
       }
-    });
+    );
 
     const data = response.data;
     return data.choices[0].message.content; // Assistant's reply
   } catch (error) {
-    console.error('Error calling the ChatGPT API:', error);
-    return 'An error occurred while processing your request.';
+    console.error("Error calling the ChatGPT API:", error);
+    return "An error occurred while processing your request.";
   }
 }
 
 // Example usage
-
-
-
 
 // API endpoint to extract key-value pairs from a document using multer for handling FormData
 const upload = multer();
@@ -240,13 +242,12 @@ app.post(
 
       const buffer = req.file.buffer;
       const csvData = await extractKeyValuePairsFromDocument(buffer);
-      const textData = await extractTextFromDocument(buffer)
-      console.log(csvData)
-      console.log(textData)
-      const jsonData = await callChatGPTAPI(csvData,textData)
-      console.log(jsonData)
+      const textData = await extractTextFromDocument(buffer);
+      console.log(csvData);
+      console.log(textData);
+      const jsonData = await callChatGPTAPI(csvData, textData);
+      console.log(jsonData);
       if (csvData) {
-        
         return res.status(200).send(jsonData);
       } else {
         return res
