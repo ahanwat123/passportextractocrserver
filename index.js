@@ -1,6 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const csv = require("csvtojson");
+const axios = require('axios');
 const {
   TextractClient,
   AnalyzeDocumentCommand,
@@ -29,7 +30,8 @@ app.use(express.json());
 
 // Middleware for CORS (Cross-Origin Resource Sharing)
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://passport-infocheck.vercel.app"); // Replace with the allowed domain
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000"); 
+  // res.setHeader("Access-Control-Allow-Origin", "https://passport-infocheck.vercel.app"); // Replace with the allowed domain
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
@@ -53,25 +55,7 @@ const requireApiKey = (req, res, next) => {
   }
 };
 
-// Utility function to process CSV data
-async function process_data(csvData) {
-  try {
-    const jsonArray = await csv().fromString(csvData);
-    const cleanedData = jsonArray.reduce((result, item) => {
-      const key = item["Key"];
-      const value = item["Value"];
-      result[key.trim()] = value.trim();
-      return result;
-    }, {});
 
-    // Convert to JSON format before returning
-    const jsonData = JSON.stringify(cleanedData, null, 2);
-    return jsonData;
-  } catch (error) {
-    console.error("Error converting CSV to JSON:", error.message);
-    throw error;
-  }
-}
 const getText = (result, blocksMap) => {
   let text = "";
 
@@ -166,12 +150,9 @@ const extractKeyValuePairsFromDocument = async (buffer) => {
       const keyValues = getKeyValueRelationship(keyMap, valueMap, blockMap);
 
       // Convert key-value pairs to CSV format
-      let csvData = "Key,Value\n";
-      Object.entries(keyValues).forEach(([key, value]) => {
-        csvData += `${key},${value}\n`;
-      });
+      
 
-      return csvData;
+      return keyValues;
     }
 
     // In case no blocks are found, return undefined
@@ -181,6 +162,67 @@ const extractKeyValuePairsFromDocument = async (buffer) => {
     throw error;
   }
 };
+async function extractTextFromDocument(buffer) {
+  try {
+    
+
+    const params = {
+      Document: {
+        Bytes: buffer
+      },
+      FeatureTypes: ["FORMS"] // You can adjust this based on your needs
+    };
+
+    const command = new AnalyzeDocumentCommand(params);
+    const data = await textract.send(command);
+
+    const lineText = [];
+    for (const block of data.Blocks) {
+      if (block.BlockType === 'LINE') {
+        lineText.push(block.Text);
+      }
+    }
+
+    return lineText;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+}
+
+
+async function callChatGPTAPI(data1, data2) {
+  const string = JSON.stringify(data1)
+  const apiKey = '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';
+  const conversation = [
+    { role: 'system', content: 'You are a data extractor or arranger  you get input extracted from the amazon textextract using forms API which gives data in key-value pairs. The required data points are: Passport No., Given Name, SurName, DOB, Place of Issue, Issue Date, Expiry Date, Gender, Nationality, Place of Birth. Please provide only this key-value data in JSON format. you have passport number in text data please carefully provide that also and as data you get  passport of different countries' },
+    { role: 'user', content: `${string}, ${data2}` },
+  ];
+  const apiUrl = 'https://api.openai.com/v1/chat/completions';
+
+  try {
+    const response = await axios.post(apiUrl, {
+      model: 'gpt-3.5-turbo',
+      messages: conversation
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      }
+    });
+
+    const data = response.data;
+    return data.choices[0].message.content; // Assistant's reply
+  } catch (error) {
+    console.error('Error calling the ChatGPT API:', error);
+    return 'An error occurred while processing your request.';
+  }
+}
+
+// Example usage
+
+
+
 
 // API endpoint to extract key-value pairs from a document using multer for handling FormData
 const upload = multer();
@@ -198,17 +240,14 @@ app.post(
 
       const buffer = req.file.buffer;
       const csvData = await extractKeyValuePairsFromDocument(buffer);
-      const passportNumbers = await extractPassportNumbersFromBuffer(buffer);
-      console.log(passportNumbers);
+      const textData = await extractTextFromDocument(buffer)
+      console.log(csvData)
+      console.log(textData)
+      const jsonData = await callChatGPTAPI(csvData,textData)
+      console.log(jsonData)
       if (csvData) {
-        const jsonData = await process_data(csvData);
         
-        const mainData = JSON.parse(jsonData)
-        //mainData["passportNumber"] = passportNumbers[0]
-        console.log(mainData)
-        const singledata = extractPassportInfo(jsonData)
-        console.log(singledata)
-        return res.status(200).send(singledata);
+        return res.status(200).send(jsonData);
       } else {
         return res
           .status(404)
