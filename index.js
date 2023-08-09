@@ -9,7 +9,7 @@ const {
 const multer = require("multer");
 const { extractPassportNumbersFromBuffer } = require("./t");
 const { extractPassportInfo } = require("./hjk");
-
+const keyforchatgpt = process.env.apikey
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -190,7 +190,7 @@ async function extractTextFromDocument(buffer) {
 
 async function callChatGPTAPI(data1, data2) {
   const string = JSON.stringify(data1);
-  const apiKey = "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";
+ 
   const conversation = [
     {
       role: "system",
@@ -211,7 +211,7 @@ async function callChatGPTAPI(data1, data2) {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer ${keyforchatgpt}`,
         },
       }
     );
