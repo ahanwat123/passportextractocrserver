@@ -190,7 +190,7 @@ async function extractTextFromDocument(buffer) {
 
 async function callChatGPTAPI(data1, data2) {
   const string = JSON.stringify(data1);
-  const apiKey = "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";
+  const apiKey = "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";
   const conversation = [
     {
       role: "system",
