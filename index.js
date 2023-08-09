@@ -9,7 +9,7 @@ const {
 const multer = require("multer");
 const { extractPassportNumbersFromBuffer } = require("./t");
 const { extractPassportInfo } = require("./hjk");
-const keyforchatgpt = process.env.apikey
+const keyforchatgpt = process.env.chatGptKey
 const app = express();
 const PORT = process.env.PORT || 4000;
 
