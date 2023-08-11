@@ -9,7 +9,7 @@ const {
 const multer = require("multer");
 const { extractPassportNumbersFromBuffer } = require("./t");
 const { extractPassportInfo } = require("./hjk");
-const keyforchatgpt = process.env.chatGptKey
+const keyforchatgpt = process.env.chatGptKey;
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -29,7 +29,7 @@ app.use(express.json());
 
 // Middleware for CORS (Cross-Origin Resource Sharing)
 app.use((req, res, next) => {
-  //res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  // res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   res.setHeader(
     "Access-Control-Allow-Origin",
     "https://passport-infocheck.vercel.app"
@@ -189,15 +189,15 @@ async function extractTextFromDocument(buffer) {
 }
 
 async function callChatGPTAPI(data1, data2) {
-  const string = JSON.stringify(data1);
- 
+  //const string = JSON.stringify(data1);
+
   const conversation = [
     {
       role: "system",
       content:
-        "You are a data extractor or arranger  you get input extracted from the amazon textextract using forms API which gives data in key-value pairs. The required data points are: Passport No., Given Name, SurName, DOB, Place of Issue, Issue Date, Expiry Date, Gender, Nationality, Place of Birth. Please provide only this key-value data in JSON format. you have passport number in text data please carefully provide that also and as data you get  passport of different countries",
+        "You are a data extractor or arranger. You receive input extracted from the Amazon TextExtract using forms API, which provides data in key-value pairs. The required data points are: Passport No., Given Name, SurName, DOB, Place of Issue, Issue Date, Expiry Date, Gender, Nationality, Place of Birth. The data may vary based on the country's format. Please provide only this key-value data in JSON format.",
     },
-    { role: "user", content: `${string}, ${data2}` },
+    { role: "user", content: `${data1}, ${data2}` },
   ];
   const apiUrl = "https://api.openai.com/v1/chat/completions";
 
@@ -212,6 +212,7 @@ async function callChatGPTAPI(data1, data2) {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${keyforchatgpt}`,
+          
         },
       }
     );
