@@ -10,6 +10,8 @@ const multer = require("multer");
 const { extractPassportNumbersFromBuffer } = require("./t");
 const { extractPassportInfo } = require("./hjk");
 const keyforchatgpt = process.env.chatGptKey;
+const accessKeyId = process.env.accessKeyId;
+const secretAccessKey = process.env.secretAccessKey;
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -23,8 +25,8 @@ const PORT = process.env.PORT || 4000;
 // };
 const awsConfig = {
   credentials: {
-    accessKeyId: "AKIA3RJI62MG2KQBVU5A",
-    secretAccessKey: "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",
+    accessKeyId: `${accessKeyId}`,
+    secretAccessKey: `${secretAccessKey}`,
   },
   region: "ap-south-1",
 };
