@@ -62,6 +62,24 @@ const requireApiKey = (req, res, next) => {
     return res.status(401).json({ error: "Invalid API key." });
   }
 };
+function adjustDates(residentInfo) {
+  const issueDate = new Date(residentInfo["Issue Date"]);
+  const expiryDate = new Date(residentInfo["Expiry Date"]);
+
+  if (issueDate >= expiryDate) {
+    const adjustedIssueDate = new Date(expiryDate);
+    const adjustedExpiryDate = new Date(issueDate);
+    return {
+      "Resident ID": residentInfo["Resident ID"],
+      "Issue Date": adjustedIssueDate.toISOString().split('T')[0],
+      "Expiry Date": adjustedExpiryDate.toISOString().split('T')[0]
+    };
+  } else {
+    return residentInfo;
+  }
+}
+
+
 
 const getText = (result, blocksMap) => {
   let text = "";
@@ -254,9 +272,10 @@ app.post(
       console.log(csvData);
       console.log(textData);
       const jsonData = await callChatGPTAPI(csvData, textData);
-      console.log(jsonData);
+      const adjustedInfo = adjustDates(jsonData);
+      console.log(adjustedInfo);
       if (csvData) {
-        return res.status(200).send(jsonData);
+        return res.status(200).send(adjustedInfo);
       } else {
         return res
           .status(404)
