@@ -14,10 +14,17 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // Replace these values with your actual AWS credentials
+// const awsConfig = {
+//   credentials: {
+//     accessKeyId: "AKIA3RJI62MG2UEHKD5M",
+//     secretAccessKey: "HkCTEzb4oschdi+AbDeOCmeIOXcDp8t6VzAKdX6n",
+//   },
+//   region: "ap-south-1",
+// };
 const awsConfig = {
   credentials: {
-    accessKeyId: "AKIA3RJI62MG2UEHKD5M",
-    secretAccessKey: "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",
+    accessKeyId: "AKIA3RJI62MG2KQBVU5A",
+    secretAccessKey: "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",
   },
   region: "ap-south-1",
 };
