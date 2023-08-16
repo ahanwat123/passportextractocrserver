@@ -67,17 +67,24 @@ function adjustDates(residentInfo) {
   const expiryDate = new Date(residentInfo["Expiry Date"]);
 
   if (issueDate >= expiryDate) {
-    const adjustedIssueDate = new Date(expiryDate);
-    const adjustedExpiryDate = new Date(issueDate);
+    const newIssueDate = new Date(expiryDate);
+    const newExpiryDate = new Date(issueDate);
+    
     return {
       "Resident ID": residentInfo["Resident ID"],
-      "Issue Date": adjustedIssueDate.toISOString().split('T')[0],
-      "Expiry Date": adjustedExpiryDate.toISOString().split('T')[0]
+      "Issue Date": newIssueDate.toISOString().split('T')[0],
+      "Expiry Date": newExpiryDate.toISOString().split('T')[0]
     };
   } else {
     return residentInfo;
   }
 }
+
+
+
+
+
+
 
 
 
@@ -272,10 +279,10 @@ app.post(
       console.log(csvData);
       console.log(textData);
       const jsonData = await callChatGPTAPI(csvData, textData);
-      const adjustedInfo = adjustDates(jsonData);
-      console.log(adjustedInfo);
+      const result = adjustDates(jsonData);
+      console.log(result);
       if (csvData) {
-        return res.status(200).send(adjustedInfo);
+        return res.status(200).send(result);
       } else {
         return res
           .status(404)
