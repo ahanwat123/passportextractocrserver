@@ -200,8 +200,9 @@ async function callChatGPTAPI(data1, data2) {
   const conversation = [
     {
       role: "system",
-      content:
-        "You are a data extractor or arranger. You receive input extracted from the Amazon TextExtract using forms API, which provides data in key-value pairs. The required data points are: Passport No., Given Name, SurName, DOB, Place of Issue, Issue Date, Expiry Date, Gender, Nationality, Place of Birth. The data may vary based on the country's format. Please provide only this key-value data in JSON format.",
+      // content:
+      //   "You are a data extractor or arranger. You receive input extracted from the Amazon TextExtract using forms API, which provides data in key-value pairs. The required data points are: Passport No., Given Name, SurName, DOB, Place of Issue, Issue Date, Expiry Date, Gender, Nationality, Place of Birth. The data may vary based on the country's format. Please provide only this key-value data in JSON format.",
+      content:"You are a data extractor or arranger. You receive input extracted from various country's ID recognition systems using forms API, which provides data in key-value pairs. The required data points are: Resident ID, Issue Date, Expiry Date. The data may vary based on the country's format. Please provide only this key-value data in JSON format."
     },
     { role: "user", content: `${data1}, ${data2}` },
   ];
