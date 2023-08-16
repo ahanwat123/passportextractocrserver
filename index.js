@@ -14,6 +14,23 @@ const accessKeyId = process.env.accessKeyId;
 const secretAccessKey = process.env.secretAccessKey;
 const app = express();
 const PORT = process.env.PORT || 4000;
+function adjustDates(residentInfo) {
+  const issueDate = new Date(residentInfo["Issue Date"]);
+  const expiryDate = new Date(residentInfo["Expiry Date"]);
+
+  if (issueDate >= expiryDate) {
+    const newIssueDate = new Date(expiryDate);
+    const newExpiryDate = new Date(issueDate);
+    
+    return {
+      "Resident ID": residentInfo["Resident ID"],
+      "Issue Date": newIssueDate.toISOString().split('T')[0],
+      "Expiry Date": newExpiryDate.toISOString().split('T')[0]
+    };
+  } else {
+    return residentInfo;
+  }
+}
 
 // Replace these values with your actual AWS credentials
 // const awsConfig = {
@@ -62,23 +79,6 @@ const requireApiKey = (req, res, next) => {
     return res.status(401).json({ error: "Invalid API key." });
   }
 };
-function adjustDates(residentInfo) {
-  const issueDate = new Date(residentInfo["Issue Date"]);
-  const expiryDate = new Date(residentInfo["Expiry Date"]);
-
-  if (issueDate >= expiryDate) {
-    const newIssueDate = new Date(expiryDate);
-    const newExpiryDate = new Date(issueDate);
-    
-    return {
-      "Resident ID": residentInfo["Resident ID"],
-      "Issue Date": newIssueDate.toISOString().split('T')[0],
-      "Expiry Date": newExpiryDate.toISOString().split('T')[0]
-    };
-  } else {
-    return residentInfo;
-  }
-}
 
 
 
@@ -279,7 +279,9 @@ app.post(
       console.log(csvData);
       console.log(textData);
       const jsonData = await callChatGPTAPI(csvData, textData);
-      const result = adjustDates(jsonData);
+      const data = JSON.parse(jsonData)
+      const result = adjustDates(data);
+
       console.log(result);
       if (csvData) {
         return res.status(200).send(result);
