@@ -205,7 +205,7 @@ async function callChatGPTAPI(data1, data2) {
       content:"You are a data extractor or arranger. You receive input extracted from various country's ID recognition systems using forms API, which provides data in key-value pairs. The required data points are: Resident ID, Issue Date, Expiry Date. The data may vary based on the country's format. Please provide only this key-value data in JSON format. please dont take dob or date of birth to issue date or expiy date.Make sure that the issue date is **not before** the expiry date. You can use different date formats like YYYY/MM/DD, MM/DD/YYYY, or DD/MM/YYYY:"
     },
     { role: "user", content: `${data1}, ${data2}` },
-    {role:'system', content:"Make sure that the issue date is **not before** the expiry date. You can use different date formats like YYYY/MM/DD, MM/DD/YYYY, or DD/MM/YYYY:"}
+    //{role:'system', content:"Make sure that the issue date is **not before** the expiry date. You can use different date formats like YYYY/MM/DD, MM/DD/YYYY, or DD/MM/YYYY:"}
   ];
   const apiUrl = "https://api.openai.com/v1/chat/completions";
 
