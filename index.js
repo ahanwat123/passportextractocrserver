@@ -280,12 +280,12 @@ app.post(
       console.log(csvData);
       console.log(textData);
       const jsonData = await callChatGPTAPI(csvData, textData);
-      const data = JSON.parse(jsonData)
-      const result = adjustDates(data);
+      //const data = JSON.parse(jsonData)
+      //const result = adjustDates(data);
 
       console.log(result);
       if (csvData) {
-        return res.status(200).send(result);
+        return res.status(200).send(jsonData);
       } else {
         return res
           .status(404)
