@@ -232,6 +232,11 @@ async function callChatGPTAPI(data1, data2) {
     },
     { role: "user", 
     content: `${data1}, ${data2}` },
+    {
+      role:"system",
+      content:"consider all dates present in user provided input and make sure expiry date is always after issue date"
+    }
+    
     //{role:'system', content:"Make sure that the issue date is **not before** the expiry date. You can use different date formats like YYYY/MM/DD, MM/DD/YYYY, or DD/MM/YYYY:"}
   ];
   const apiUrl = "https://api.openai.com/v1/chat/completions";
