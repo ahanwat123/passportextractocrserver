@@ -234,7 +234,7 @@ async function callChatGPTAPI(data1, data2) {
     content: `${data1}, ${data2}` },
     {
       role:"system",
-      content:"consider all dates present in user provided input and make sure expiry date is always after issue date and issue date is near to expiry date consider different date formats like YYYY/MM/DD, MM/DD/YYYY, or DD/MM/YYYY "
+      content:"consider all dates present in user provided input and make sure expiry date is always after issue date and issue date is near to expiry date consider different date formats like YYYY/MM/DD, MM/DD/YYYY, or DD/MM/YYYY you are taking other formate date please use your intelligence"
     }
     
     //{role:'system', content:"Make sure that the issue date is **not before** the expiry date. You can use different date formats like YYYY/MM/DD, MM/DD/YYYY, or DD/MM/YYYY:"}
