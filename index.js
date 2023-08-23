@@ -227,18 +227,27 @@ async function callChatGPTAPI(data1, data2) {
       role: "system",
       //content:"Act as a data extractor, extract the data from various countries Resident ID using AWS textract api. The following data points i.e., ONLY 3 data points needs to be extracted and arrange in a key value pair in JSON format: ‘Resident ID No.’, ‘Issue Date’, ‘Expiry Date’. 'Resident ID No.' which can be termed as ‘National ID’/ ‘Personal No.’/ ‘I.D. No.’/ ‘Civil Number’/ ‘Civil ID No.’/ ‘UID No.’ too. 'Issue Date' which can be termed as ‘Issuing Date’/ ‘Date of Issue’ too. 'Expiry Date' which can be termed as ‘Until Valid’. If Resident ID is not having 'Issue date' e.g., countries like Bahrain, Qatar, Oman, Kuwait etc., then leave output as blank. Don't consider ‘Date of Birth’ as ‘Issue date’.  Expiry Date’ year will be the highest year in the Resident ID.",
       //content:"Act as a data extractor, extract the data from various countries Resident ID using AWS textract api. The text content may vary, and the 'Issue Date' and 'Expiry Date' can appear at different positions within the text. The following data points, ONLY 3, need to be extracted and arranged in a key-value pair in JSON format: 'Resident ID No.', 'Issue Date', and 'Expiry Date'. The 'Resident ID No.' can also be termed as ‘National ID’/ ‘Personal No.’/ ‘I.D. No.’/ ‘Civil Number’/ ‘Civil ID No.’/ ‘UID No.’. The 'Issue Date' can be termed as ‘Issuing Date’/ ‘Date of Issue’. The 'Expiry Date' can be termed as ‘Until Valid’. If a Resident ID does not have an 'Issue Date', especially for countries like Bahrain, Qatar, Oman, Kuwait, etc., then leave the output as blank. Don't consider ‘Date of Birth’ as ‘Issue Date’. The 'Expiry Date' year will be the highest year in the Resident ID. The date format extracted can be either in DD/MM/YYYY or YYYY/MM/DD but should be outputted as DD/MM/YYYY. Your task is to extract and provide them in the following format: Expiry Date: Issue Date: [Issue Date], [Expiry Date]."
-      content:`Task: From the Resident ID's Textract output, map keywords to their respective values for better data extraction.
+      content:`Task: Correctly map the extracted keywords to their respective values from the AWS Textract output for a Resident ID.
       Details:
-      Resident ID No.: Potential labels include 'National ID', 'Personal No.', 'I.D. No.', 'Civil Number', 'Civil ID No.', 'UID No.'. Once a label is found, extract the nearest numeric value with a length that resembles an ID (e.g., 784197681509275 in the given data).
-      Issue Date: Can be labeled as 'Issuing Date', 'Date of Issue', or simply 'Issue Date'. After finding the label, capture the closest date format (either DD/MM/YYYY or YYYY/MM/DD). If no date is found, especially for certain countries, leave it blank. Note: Ensure that 'Date of Birth' isn't mistakenly extracted as 'Issue Date'.
-      Expiry Date: Might be termed 'Until Valid', 'Expiry Date', or other similar labels. Capture the date format near this term. If determining the 'Expiry Date', prioritize the date with the highest year from the output list.
-      Note on Variability: AWS Textract may return texts in a fragmented manner, causing key-value pairs to be non-adjacent in some cases. Ensure that the algorithm accounts for variable distance between keys and potential values.
-      Date Formatting: Post extraction, ensure all dates are in the DD/MM/YYYY format regardless of their original format.
+      Resident ID No.:
+      Potential labels to look for: 'National ID', 'Personal No.', 'I.D. No.', 'Civil Number', 'Civil ID No.', 'UID No.', or similar variations.
+      Once a label is located, search for the closest valid numeric sequence that seems long enough to be an ID.
+      Issue Date:
+      Might be termed 'Issuing Date', 'Date of Issue', or 'Issue Date'.
+      After locating the label, extract the closest valid date pattern. The date should strictly follow either the DD/MM/YYYY or YYYY/MM/DD format. Reject any sequence that doesn't match typical date structures.
+      Specifically, ensure values for day/month/year are within valid ranges (e.g., month values should be between 01 and 12).
+      Ensure 'Date of Birth' isn't mistakenly extracted as 'Issue Date'.
+      Expiry Date:
+      Search for terms like 'Until Valid', 'Expiry Date', or similar.
+      Extract the closest valid date pattern, again ensuring the date follows strict date formats and logical values.
+      Note on Variability: While AWS Textract's output can be fragmented, make sure the algorithm accounts for a certain leeway in distance between labels and potential values, but remains strict in validating the data structures, especially for dates.
+      
+      Date Formatting: After extraction, format all dates in DD/MM/YYYY.
       Output:
       {
-       "Resident ID No.": "[Resident ID No.]",
-       "Issue Date": "[Issue Date]",
-       "Expiry Date": "[Expiry Date]"
+       "Resident ID No.": "[Valid Resident ID No.]",
+       "Issue Date": "[Valid Issue Date]",
+       "Expiry Date": "[Valid Expiry Date]"
       }`
     },
     { role: "user", 
