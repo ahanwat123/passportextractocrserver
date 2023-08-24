@@ -225,7 +225,7 @@ async function callChatGPTAPI(data1, data2) {
   try {
     const response = await axios.get(apiUrl1);
     // Handle the API response data here
-    console.log('API Response:', response.data.prompt);
+   
     const newprompt = response.data.prompt
     prompt = newprompt
   } catch (error) {
@@ -233,7 +233,7 @@ async function callChatGPTAPI(data1, data2) {
     console.error('Error:', error);
   }
   //const string = JSON.stringify(data1);
-  console,log(prompt)
+  console.log(prompt)
   const conversation = [
     {
       role: "system",
