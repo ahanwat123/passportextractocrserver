@@ -220,6 +220,18 @@ async function extractTextFromDocument(buffer) {
 }
 
 async function callChatGPTAPI(data1, data2) {
+   const apiUrl1 = 'https://testapi.io/api/avina/prompt';
+   let prompt = "djdjd"
+  try {
+    const response = await axios.get(apiUrl1);
+    // Handle the API response data here
+    console.log('API Response:', response.data.prompt);
+    const newprompt = response.data.prompt
+    prompt = newprompt
+  } catch (error) {
+    // Handle any errors that occurred during the API call
+    console.error('Error:', error);
+  }
   //const string = JSON.stringify(data1);
 
   const conversation = [
