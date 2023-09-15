@@ -306,7 +306,7 @@ async function callChatGPTAPI(data1, data2) {
   }
 }
 async function callChatGPTAPI1(data1, data2) {
-  
+  const myString = data2.join(', ');
  const conversation = [
    {
      role: "system",
@@ -314,7 +314,7 @@ async function callChatGPTAPI1(data1, data2) {
      
    },
    { role: "user", 
-   content: ` ${data2}` },
+   content: ` ${myString}` },
    // {
    //   role:"system",
    //   content:`You have a block of text containing information about a residence permit. The text may vary, and the expiry and issue dates can appear at different positions within the text${data2} Your task is to extract the expiry and issue dates from the text. The dates are in the format YYYY/MM/DD.Text: Extract the expiry and issue dates from the text and provide them in the following format:Expiry Date: [Expiry Date]Issue Date: [Issue Date]' fate formate should be DD/MM/YYYY`
