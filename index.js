@@ -332,7 +332,7 @@ app.post(
       {
         const realData =  findIssueAndExpiryDates(textData)
 
-      
+        console.log(realData)
       //const data = JSON.parse(jsonData)
       //const result = adjustDates(data);
       jsonData["Issue Date"] = realData.issueDate
