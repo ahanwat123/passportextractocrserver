@@ -305,7 +305,47 @@ async function callChatGPTAPI(data1, data2) {
     return "An error occurred while processing your request.";
   }
 }
+async function callChatGPTAPI1(data1, data2) {
+  
+ const conversation = [
+   {
+     role: "system",
+     content:"Given a text containing various pieces of information, please extract and format any valid dates found in the 'dd/mm/yyyy' format. Dates may appear in different parts of the text, and your task is to identify and convert them to this specific format. Ensure to provide all valid dates found in the text.",
+     
+   },
+   { role: "user", 
+   content: ` ${data2}` },
+   // {
+   //   role:"system",
+   //   content:`You have a block of text containing information about a residence permit. The text may vary, and the expiry and issue dates can appear at different positions within the text${data2} Your task is to extract the expiry and issue dates from the text. The dates are in the format YYYY/MM/DD.Text: Extract the expiry and issue dates from the text and provide them in the following format:Expiry Date: [Expiry Date]Issue Date: [Issue Date]' fate formate should be DD/MM/YYYY`
+   // }
+   
+   //{role:'system', content:"Make sure that the issue date is **not before** the expiry date. You can use different date formats like YYYY/MM/DD, MM/DD/YYYY, or DD/MM/YYYY:"}
+ ];
+ const apiUrl = "https://api.openai.com/v1/chat/completions";
 
+ try {
+   const response = await axios.post(
+     apiUrl,
+     {
+       model: "gpt-3.5-turbo",
+       messages: conversation,
+     },
+     {
+       headers: {
+         "Content-Type": "application/json",
+         Authorization: `Bearer ${keyforchatgpt}`,
+       },
+     }
+   );
+
+   const data = response.data;
+   return data.choices[0].message.content; // Assistant's reply
+ } catch (error) {
+   console.error("Error calling the ChatGPT API:", error);
+   return "An error occurred while processing your request.";
+ }
+}
 // Example usage
 
 // API endpoint to extract key-value pairs from a document using multer for handling FormData
@@ -330,13 +370,9 @@ app.post(
       console.log(textData);
       if(containsUnitedArabEmirates(textData)==true)
       {
-        const realData =  findIssueAndExpiryDates(textData)
-
+        const realData =  await callChatGPTAPI1(csvData, textData);
         console.log(realData)
-      //const data = JSON.parse(jsonData)
-      //const result = adjustDates(data);
-      jsonData["Issue Date"] = realData.issueDate
-      jsonData["Expiry Date"] = realData.expiryDate
+      
       }
       
 
