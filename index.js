@@ -308,13 +308,13 @@ async function callChatGPTAPI(data1, data2) {
 async function callChatGPTAPI1(data1, data2) {
   const myString = data2.join(', ');
  const conversation = [
+  { role: "user", 
+   content: ` ${myString}` },
    {
      role: "system",
-     content:"Given a text containing various pieces of information, please extract and format any valid dates found in the 'dd/mm/yyyy' format. Dates may appear in different parts of the text, and your task is to identify and convert them to this specific format. Ensure to provide all valid dates found in the text.",
-     
+     content:"return iisue and expiry date in json formate in dd/mm/yyyy not code"
    },
-   { role: "user", 
-   content: ` ${myString}` },
+   
    // {
    //   role:"system",
    //   content:`You have a block of text containing information about a residence permit. The text may vary, and the expiry and issue dates can appear at different positions within the text${data2} Your task is to extract the expiry and issue dates from the text. The dates are in the format YYYY/MM/DD.Text: Extract the expiry and issue dates from the text and provide them in the following format:Expiry Date: [Expiry Date]Issue Date: [Issue Date]' fate formate should be DD/MM/YYYY`
