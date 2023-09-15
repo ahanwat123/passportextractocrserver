@@ -111,7 +111,36 @@ const getText = (result, blocksMap) => {
   //console.log(text)
   return text.trim();
 };
+function findIssueAndExpiryDates(arr) {
+  let foundCountry = false;
+  const dateRegex = /\d{2}\/\d{2}\/\d{4}/g;
+  const dates = [];
 
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === 'UNITED ARAB EMIRATES') {
+      foundCountry = true;
+    } else if (foundCountry && dateRegex.test(arr[i])) {
+      const dateMatch = arr[i].match(dateRegex);
+      dates.push(...dateMatch);
+    }
+  }
+
+  if (dates.length === 0) {
+    return null; // No dates found
+  }
+
+  // Sort the dates in ascending order
+  const sortedDates = dates.sort((a, b) => {
+    const dateA = new Date(a);
+    const dateB = new Date(b);
+    return dateA - dateB;
+  });
+
+  return {
+    issueDate: sortedDates[sortedDates.length - 1], // Highest date as issueDate
+    expiryDate: sortedDates[0], // Lowest date as expiryDate
+  };
+}
 const findValueBlock = (keyBlock, valueMap) => {
   let valueBlock;
   keyBlock.Relationships.forEach((relationship) => {
@@ -218,7 +247,9 @@ async function extractTextFromDocument(buffer) {
     throw error;
   }
 }
-
+function containsUnitedArabEmirates(arr) {
+  return arr.includes('UNITED ARAB EMIRATES');
+}
 async function callChatGPTAPI(data1, data2) {
    const apiUrl1 = 'https://testapi.io/api/avina/prompt';
    let prompt = "djdjd"
@@ -294,11 +325,20 @@ app.post(
       const buffer = req.file.buffer;
       const csvData = await extractKeyValuePairsFromDocument(buffer);
       const textData = await extractTextFromDocument(buffer);
+      const jsonData = await callChatGPTAPI(csvData, textData);
       console.log(csvData);
       console.log(textData);
-      const jsonData = await callChatGPTAPI(csvData, textData);
+      if(containsUnitedArabEmirates(textData)==true)
+      {
+        const realData =  findIssueAndExpiryDates(textData)
+
+      
       //const data = JSON.parse(jsonData)
       //const result = adjustDates(data);
+      jsonData["Issue Date"] = realData.issueDate
+      jsonData["Expiry Date"] = realData.expiryDate
+      }
+      
 
      // console.log(result);
       if (csvData) {
