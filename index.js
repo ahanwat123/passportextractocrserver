@@ -333,7 +333,7 @@ app.post(
       const lightData = JSON.parse(jsonData)
       if(containsUnitedArabEmirates(textData)==true)
       {
-        const last10Elements = textData.slice(-17);
+        const last10Elements = textData.slice(-10);
        const realData =  extractAndFormatDates(last10Elements)
        console.log(realData)
        console.log(lightData)
