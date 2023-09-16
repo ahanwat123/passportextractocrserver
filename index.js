@@ -138,8 +138,8 @@ function extractAndFormatDates(elements) {
   }
 
   return {
-    "IssueDate": issueDate ? formatAsDDMMYYYY(issueDate) : "",
-    "ExpiryDate": expiryDate ? formatAsDDMMYYYY(expiryDate) : "",
+    IssueDate: issueDate ? formatAsDDMMYYYY(issueDate) : "",
+    ExpiryDate: expiryDate ? formatAsDDMMYYYY(expiryDate) : "",
   };
 }
 
@@ -335,7 +335,9 @@ app.post(
         
        const realData =  extractAndFormatDates(textData)
        console.log(realData)
-       jsonData["Issue Date"] = realData.IssueDate
+       const dfg = realData.IssueDate
+       console.log(dfg)
+       jsonData["Issue Date"] = dfg
       }
       
 
