@@ -335,6 +335,7 @@ app.post(
         
        const realData =  extractAndFormatDates(textData)
        console.log(realData)
+       jsonData["Issue Date"] = realData.IssueDate
       }
       
 
