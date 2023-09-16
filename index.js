@@ -338,6 +338,7 @@ app.post(
        console.log(realData)
        console.log(lightData)
        lightData["Issue Date"] = realData.IssueDate
+       lightData["Expiry Date"] = realData.ExpiryDate
       }
       
 
