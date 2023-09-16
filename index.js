@@ -330,21 +330,21 @@ app.post(
       const jsonData = await callChatGPTAPI(csvData, textData);
       console.log(csvData);
       console.log(textData);
+      const lightData = JSON.parse(jsonData)
       if(containsUnitedArabEmirates(textData)==true)
       {
         
        const realData =  extractAndFormatDates(textData)
        console.log(realData)
-       const dfg = realData.IssueDate
-       console.log(dfg)
-       jsonData["Issue Date"] = dfg
+       console.log(lightData)
+       lightData["Issue Date"] = realData.IssueDate
       }
       
 
      // console.log(result);
       if (csvData) {
         console.log(jsonData)
-        return res.status(200).send(jsonData);
+        return res.status(200).send(lightData);
       } else {
         return res
           .status(404)
