@@ -275,7 +275,7 @@ async function callChatGPTAPI(data1, data2) {
       content:`${prompt}`
     },
     { role: "user", 
-    content: ` ${data2}` },
+    content: ` ${data1}, ${data2}` },
     // {
     //   role:"system",
     //   content:`You have a block of text containing information about a residence permit. The text may vary, and the expiry and issue dates can appear at different positions within the text${data2} Your task is to extract the expiry and issue dates from the text. The dates are in the format YYYY/MM/DD.Text: Extract the expiry and issue dates from the text and provide them in the following format:Expiry Date: [Expiry Date]Issue Date: [Issue Date]' fate formate should be DD/MM/YYYY`
@@ -331,15 +331,15 @@ app.post(
       console.log(csvData);
       console.log(textData);
       const lightData = JSON.parse(jsonData)
-      if(containsUnitedArabEmirates(textData)==true)
-      {
-        const last10Elements = textData.slice(-10);
-       const realData =  extractAndFormatDates(last10Elements)
-       console.log(realData)
-       console.log(lightData)
-       lightData["Issue Date"] = realData.IssueDate
-       lightData["Expiry Date"] = realData.ExpiryDate
-      }
+      // if(containsUnitedArabEmirates(textData)==true)
+      // {
+      //   const last10Elements = textData.slice(-10);
+      //  const realData =  extractAndFormatDates(last10Elements)
+      //  console.log(realData)
+      //  console.log(lightData)
+      //  lightData["Issue Date"] = realData.IssueDate
+      //  lightData["Expiry Date"] = realData.ExpiryDate
+      // }
       
 
      // console.log(result);
