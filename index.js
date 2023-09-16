@@ -138,8 +138,8 @@ function extractAndFormatDates(elements) {
   }
 
   return {
-    IssueDate: issueDate ? formatAsDDMMYYYY(issueDate) : "",
-    ExpiryDate: expiryDate ? formatAsDDMMYYYY(expiryDate) : "",
+    "IssueDate": issueDate ? formatAsDDMMYYYY(issueDate) : "",
+    "ExpiryDate": expiryDate ? formatAsDDMMYYYY(expiryDate) : "",
   };
 }
 
