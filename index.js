@@ -8,29 +8,13 @@ const {
 } = require("@aws-sdk/client-textract");
 const multer = require("multer");
 const { extractPassportNumbersFromBuffer } = require("./t");
-const { extractPassportInfo } = require("./hjk");
+//const { extractPassportInfo } = require("./hjk");
 const keyforchatgpt = process.env.chatGptKey;
 const accessKeyId = process.env.accessKeyId;
 const secretAccessKey = process.env.secretAccessKey;
 const app = express();
 const PORT = process.env.PORT || 4000;
-function adjustDates(residentInfo) {
-  const issueDate = new Date(residentInfo["Issue Date"]);
-  const expiryDate = new Date(residentInfo["Expiry Date"]);
 
-  if (issueDate >= expiryDate) {
-    const newIssueDate = new Date(expiryDate);
-    const newExpiryDate = new Date(issueDate);
-    
-    return {
-      "Resident ID": residentInfo["Resident ID"],
-      "Issue Date": newIssueDate.toISOString().split('T')[0],
-      "Expiry Date": newExpiryDate.toISOString().split('T')[0]
-    };
-  } else {
-    return residentInfo;
-  }
-}
 
 // Replace these values with your actual AWS credentials
 // const awsConfig = {
@@ -111,36 +95,54 @@ const getText = (result, blocksMap) => {
   //console.log(text)
   return text.trim();
 };
-function findIssueAndExpiryDates(arr) {
-  let foundCountry = false;
-  const dateRegex = /\d{2}\/\d{2}\/\d{4}/g;
-  const dates = [];
+function extractAndFormatDates(elements) {
+  let issueDate, expiryDate;
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === 'UNITED ARAB EMIRATES') {
-      foundCountry = true;
-    } else if (foundCountry && dateRegex.test(arr[i])) {
-      const dateMatch = arr[i].match(dateRegex);
-      dates.push(...dateMatch);
+  for (const element of elements) {
+    const dateMatches = element.match(/(\d{2}[/-]\d{2}[/-]\d{4}|\d{4}[/-]\d{2}[/-]\d{2})/g);
+
+    if (dateMatches) {
+      for (const dateMatch of dateMatches) {
+        const [year, month, day] = dateMatch.split(/[/-]/);
+
+        // Check if the date is already in DD/MM/YYYY format
+        if (parseInt(day) <= 31 && parseInt(month) <= 12) {
+          if (!issueDate) {
+            issueDate = dateMatch;
+          } else if (!expiryDate) {
+            expiryDate = dateMatch;
+          }
+        } else {
+          const formattedDate = `${day}/${month}/${year}`;
+          if (!issueDate) {
+            issueDate = formattedDate;
+          } else if (!expiryDate) {
+            expiryDate = formattedDate;
+          }
+        }
+      }
     }
   }
 
-  if (dates.length === 0) {
-    return null; // No dates found
+  // Format the dates as DD/MM/YYYY
+  const formatAsDDMMYYYY = (date) => {
+    const [year, month, day] = date.split(/[/-]/);
+    return `${day}/${month}/${year}`;
+  };
+
+  // Compare and reorder the dates if necessary
+  if (issueDate && expiryDate && new Date(issueDate) > new Date(expiryDate)) {
+    const temp = issueDate;
+    issueDate = expiryDate;
+    expiryDate = temp;
   }
 
-  // Sort the dates in ascending order
-  const sortedDates = dates.sort((a, b) => {
-    const dateA = new Date(a);
-    const dateB = new Date(b);
-    return dateA - dateB;
-  });
-
   return {
-    issueDate: sortedDates[sortedDates.length - 1], // Highest date as issueDate
-    expiryDate: sortedDates[0], // Lowest date as expiryDate
+    IssueDate: issueDate ? formatAsDDMMYYYY(issueDate) : "",
+    ExpiryDate: expiryDate ? formatAsDDMMYYYY(expiryDate) : "",
   };
 }
+
 const findValueBlock = (keyBlock, valueMap) => {
   let valueBlock;
   keyBlock.Relationships.forEach((relationship) => {
@@ -305,47 +307,7 @@ async function callChatGPTAPI(data1, data2) {
     return "An error occurred while processing your request.";
   }
 }
-async function callChatGPTAPI1(data1, data2) {
-  const myString = data2.join(', ');
- const conversation = [
-  { role: "user", 
-   content: ` ${myString}` },
-   {
-     role: "system",
-     content:"return iisue and expiry date in json formate in dd/mm/yyyy not code"
-   },
-   
-   // {
-   //   role:"system",
-   //   content:`You have a block of text containing information about a residence permit. The text may vary, and the expiry and issue dates can appear at different positions within the text${data2} Your task is to extract the expiry and issue dates from the text. The dates are in the format YYYY/MM/DD.Text: Extract the expiry and issue dates from the text and provide them in the following format:Expiry Date: [Expiry Date]Issue Date: [Issue Date]' fate formate should be DD/MM/YYYY`
-   // }
-   
-   //{role:'system', content:"Make sure that the issue date is **not before** the expiry date. You can use different date formats like YYYY/MM/DD, MM/DD/YYYY, or DD/MM/YYYY:"}
- ];
- const apiUrl = "https://api.openai.com/v1/chat/completions";
 
- try {
-   const response = await axios.post(
-     apiUrl,
-     {
-       model: "gpt-3.5-turbo",
-       messages: conversation,
-     },
-     {
-       headers: {
-         "Content-Type": "application/json",
-         Authorization: `Bearer ${keyforchatgpt}`,
-       },
-     }
-   );
-
-   const data = response.data;
-   return data.choices[0].message.content; // Assistant's reply
- } catch (error) {
-   console.error("Error calling the ChatGPT API:", error);
-   return "An error occurred while processing your request.";
- }
-}
 // Example usage
 
 // API endpoint to extract key-value pairs from a document using multer for handling FormData
@@ -370,9 +332,9 @@ app.post(
       console.log(textData);
       if(containsUnitedArabEmirates(textData)==true)
       {
-        const realData =  await callChatGPTAPI1(csvData, textData);
-        console.log(realData)
-      
+        
+       const realData =  extractAndFormatDates(textData)
+       console.log(realData)
       }
       
 
