@@ -300,7 +300,7 @@ async function callChatGPTAPI(data1, data2) {
       {
         model: "gpt-3.5-turbo",
         messages: conversation,
-        temp:0.2
+        
       },
       {
         headers: {
