@@ -341,7 +341,7 @@ app.post(
       console.log(csvData);
       console.log(textData);
       
-      const lightData = JSON.parse(jsonData)
+      const lightData = jsonData
       if(hasSurnameKey(csvData)==false)
       {
         lightData["Surname"] = ""
