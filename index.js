@@ -252,6 +252,15 @@ async function extractTextFromDocument(buffer) {
 function containsUnitedArabEmirates(arr) {
   return arr.includes('UNITED ARAB EMIRATES');
 }
+function hasSurnameKey(jsonObject) {
+  for (const key in jsonObject) {
+      // Check if the key has common indicators of a surname
+      if (key.includes('Surname') || key.includes('Last Name') || key.includes('Family Name')) {
+          return true;
+      }
+  }
+  return false;
+}
 async function callChatGPTAPI(data1, data2) {
    const apiUrl1 = 'https://testapi.io/api/avina/prompt';
    let prompt = "djdjd"
@@ -330,7 +339,12 @@ app.post(
       const jsonData = await callChatGPTAPI(csvData, textData);
       console.log(csvData);
       console.log(textData);
+      
       const lightData = JSON.parse(jsonData)
+      if(hasSurnameKey(csvData)==false)
+      {
+        lightData["Surname"] = ""
+      }
       // if(containsUnitedArabEmirates(textData)==true)
       // {
       //   const last10Elements = textData.slice(-10);
