@@ -337,10 +337,10 @@ app.post(
       console.log(textData);
       
       const lightData = jsonData
-      if(hasSurnameKey(csvData)==false)
-      {
-        lightData["Surname"] = ""
-      }
+      // if(hasSurnameKey(csvData)==false)
+      // {
+      //   lightData["Surname"] = ""
+      // }
       // if(containsUnitedArabEmirates(textData)==true)
       // {
       //   const last10Elements = textData.slice(-10);
