@@ -284,13 +284,8 @@ async function callChatGPTAPI(data1, data2) {
       content:`${prompt}`
     },
     { role: "user", 
-    content: ` ${data1}, ${data2}` },
-    // {
-    //   role:"system",
-    //   content:`You have a block of text containing information about a residence permit. The text may vary, and the expiry and issue dates can appear at different positions within the text${data2} Your task is to extract the expiry and issue dates from the text. The dates are in the format YYYY/MM/DD.Text: Extract the expiry and issue dates from the text and provide them in the following format:Expiry Date: [Expiry Date]Issue Date: [Issue Date]' fate formate should be DD/MM/YYYY`
-    // }
+    content: ` data Source DS1-${data1} and data Source DS2-${data2}` },
     
-    //{role:'system', content:"Make sure that the issue date is **not before** the expiry date. You can use different date formats like YYYY/MM/DD, MM/DD/YYYY, or DD/MM/YYYY:"}
   ];
   const apiUrl = "https://api.openai.com/v1/chat/completions";
 
