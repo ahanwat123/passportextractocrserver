@@ -224,6 +224,36 @@ const extractKeyValuePairsFromDocument = async (buffer) => {
     throw error;
   }
 };
+async function extractTextFromDocument1(fileContent) {
+  try {
+    // Read the local document file
+    //const fileContent = fs.readFileSync(filePath);
+
+    const params = {
+      Document: {
+        Bytes: fileContent
+      }
+    };
+
+    const data = await textract.detectDocumentText(params).promise();
+
+    // Extract text as lines
+    const lineText = [];
+    for (const block of data.Blocks) {
+      if (block.BlockType === 'LINE') {
+        lineText.push(block.Text);
+      }
+    }
+
+    // Join the lines into a single line of text
+    const singleLineText = lineText.join('');
+
+    return singleLineText;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+}
 async function extractTextFromDocument(buffer) {
   try {
     const params = {
@@ -331,7 +361,7 @@ app.post(
 
       const buffer = req.file.buffer;
       const csvData = await extractKeyValuePairsFromDocument(buffer);
-      const textData = await extractTextFromDocument(buffer);
+      const textData = await extractTextFromDocument1(buffer);
       const jsonData = await callChatGPTAPI(csvData, textData);
       console.log(csvData);
       console.log(textData);
