@@ -335,7 +335,7 @@ app.post(
       const jsonData = await callChatGPTAPI(csvData, textData);
       console.log(csvData);
       console.log(textData);
-      
+      console.log(a)
       const lightData = jsonData
       // if(hasSurnameKey(csvData)==false)
       // {
