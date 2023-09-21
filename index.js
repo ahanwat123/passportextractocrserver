@@ -6,6 +6,7 @@ const {
   TextractClient,
   AnalyzeDocumentCommand,
 } = require("@aws-sdk/client-textract");
+const AWS = require('aws-sdk');
 const multer = require("multer");
 const { extractPassportNumbersFromBuffer } = require("./t");
 //const { extractPassportInfo } = require("./hjk");
@@ -31,7 +32,12 @@ const awsConfig = {
   },
   region: "ap-south-1",
 };
-
+AWS.config.update({
+  region: "ap-south-1",
+  accessKeyId: `${accessKeyId}`,
+  secretAccessKey: `${secretAccessKey}`
+});
+const textract1 = new AWS.Textract();
 const textract = new TextractClient(awsConfig);
 
 // Middleware to parse JSON and handle potential errors
