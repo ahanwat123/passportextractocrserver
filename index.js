@@ -367,7 +367,7 @@ app.post(
 
       const buffer = req.file.buffer;
       const csvData = await extractKeyValuePairsFromDocument(buffer);
-      const textData = await extractTextFromDocument1(buffer);
+      const textData = await extractTextFromDocument(buffer);
       const jsonData = await callChatGPTAPI(csvData, textData);
       console.log(csvData);
       console.log(textData);
