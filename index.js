@@ -241,7 +241,7 @@ async function extractTextFromDocument1(fileContent) {
       }
     };
 
-    const data = await textract.detectDocumentText(params).promise();
+    const data = await textract1.detectDocumentText(params).promise();
 
     // Extract text as lines
     const lineText = [];
