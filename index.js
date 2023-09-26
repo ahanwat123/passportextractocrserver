@@ -285,6 +285,35 @@ async function extractTextFromDocument(buffer) {
     throw error;
   }
 }
+function findSurnameOrGivenName(ds1, ds2) {
+  let surnameKey = null;
+  let givenNameKey = null;
+
+  // Search for keys containing "Surname" or "Given Name" in ds1
+  for (const key in ds1) {
+    if (key.includes("Surname")) {
+      surnameKey = key;
+      break;
+    } else if (key.includes("Given Name") || key.includes("Name")) {
+      givenNameKey = key;
+    }
+  }
+
+  // If we found a "Surname" key, return its value
+  if (surnameKey !== null) {
+      const temp = ds1[surnameKey]
+    return {surnameKey: temp};
+  }
+
+  // If we found a "Given Name" or "Name" key, return its value
+  if (givenNameKey !== null) {
+      const temp = ds2[givenNameKey]
+    return {name: givenNameKey};
+  }
+
+  // If neither key was found, return the complete name from ds2
+  return false; 
+}
 function containsUnitedArabEmirates(arr) {
   return arr.includes('UNITED ARAB EMIRATES');
 }
@@ -329,7 +358,7 @@ async function callChatGPTAPI(data1, data2) {
     const response = await axios.post(
       apiUrl,
       {
-        model: "gpt-3.5-turbo",
+        model: "gpt-4.0",
         messages: conversation,
         
       },
@@ -373,10 +402,7 @@ app.post(
       console.log(textData);
       //console.log(a)
       const lightData = jsonData
-      // if(hasSurnameKey(csvData)==false)
-      // {
-      //   lightData["Surname"] = ""
-      // }
+      //---------------------------------------------------
       // if(containsUnitedArabEmirates(textData)==true)
       // {
       //   const last10Elements = textData.slice(-10);
@@ -386,8 +412,18 @@ app.post(
       //  lightData["Issue Date"] = realData.IssueDate
       //  lightData["Expiry Date"] = realData.ExpiryDate
       // }
-      
-
+      //-----------------------------------------------
+      const checkValue = findSurnameOrGivenName(csvData, textData)
+      if(checkValue != false)
+      {
+        if(checkValue.hasOwnProperty("surnameKey"))
+        {
+          lightData["Surname"] = checkValue["surnameKey"]
+        }
+        else{
+          lightData["Given Name"] = checkValue["name"]
+        }
+      }
      // console.log(result);
       if (csvData) {
         console.log(jsonData)
