@@ -401,7 +401,7 @@ app.post(
       console.log(csvData);
       console.log(textData);
       //console.log(a)
-      const lightData = jsonData
+      const lightData = JSON.parse(jsonData)
       //---------------------------------------------------
       // if(containsUnitedArabEmirates(textData)==true)
       // {
