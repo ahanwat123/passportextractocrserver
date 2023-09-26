@@ -307,8 +307,8 @@ function findSurnameOrGivenName(ds1, ds2) {
 
   // If we found a "Given Name" or "Name" key, return its value
   if (givenNameKey !== null) {
-      const temp = ds2[givenNameKey]
-    return {name: givenNameKey};
+      const temp = ds1[givenNameKey]
+    return {name: temp};
   }
 
   // If neither key was found, return the complete name from ds2
@@ -422,6 +422,7 @@ app.post(
         }
         else{
           lightData["Given Name"] = checkValue["name"]
+          lightData["Surname"] = " "
         }
       }
      // console.log(result);
