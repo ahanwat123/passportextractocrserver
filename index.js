@@ -442,15 +442,15 @@ app.post(
         if(checkValue.hasOwnProperty("surname"))
         {
           lightData["Surname"] = checkValue["surname"]
-        }if(checkValue.hasOwnProperty("givenname"))
+        }else if(checkValue.hasOwnProperty("givenname"))
         {
           lightData["Given Name"] = checkValue["givenname"]
         }
-        if(checkValue.hasOwnProperty("firstName"))
+        else if(checkValue.hasOwnProperty("firstName"))
         {
           lightData["Given Name"] = checkValue["firstName"]
         }
-        if(checkValue.hasOwnProperty("name"))
+        else if(checkValue.hasOwnProperty("name"))
         {
           lightData["Given Name"] = checkValue["name"]
         }
