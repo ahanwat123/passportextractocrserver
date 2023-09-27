@@ -464,7 +464,9 @@ app.post(
       //-----------------------------------------------
       const checkValue = findSurnameOrGivenNameOrFirstName(csvData, textData)
       if(checkValue != false)
-      {
+      { 
+        lightData["Surname"] = "";
+        lightData["Given Name"] = "";
         if(checkValue.hasOwnProperty("surname"))
         {
           lightData["Surname"] = checkValue["surname"]
