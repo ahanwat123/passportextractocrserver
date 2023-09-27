@@ -290,6 +290,8 @@ function findSurnameOrGivenNameOrFirstName(ds1, ds2) {
   let givenNameKey = null;
   let firstNameKey = null;
   let name = null;
+  let names = null;
+  let details = {}
 
   // Search for keys containing "Surname," "Given Name," or "Name" in ds1
   for (const key in ds1) {
@@ -299,31 +301,55 @@ function findSurnameOrGivenNameOrFirstName(ds1, ds2) {
       for (let i = 0; i < ds2.length; i++) {
     if (ds2[i].includes('Surname') && i + 1 < ds2.length) {
       const completeName = ds2[i + 1];
-      return { surname: ds1[surnameKey] };
+      details["surname"] = ds1[surnameKey]
+      //return { surname: ds1[surnameKey] };
+      return details
     }}
-    } else if (lowerKey.includes("given name")) {
+    } if (lowerKey.includes("given name")) {
       givenNameKey = key;
       for (let i = 0; i < ds2.length; i++) {
-     if ((ds2[i].includes('given Name') || ds2[i].includes(' given Name')) && i + 1 < ds2.length) {
-      { givenname: ds1[givenNameKey] }
+     if ((ds2[i].includes('given Name')) && i + 1 < ds2.length) {
+     // return { givenname: ds1[givenNameKey] }
+      details["givenname"] = ds1[givenNameKey] 
+     
+      return details
     } }
-    } else if (lowerKey.includes("first name")) {
+    } if (lowerKey.includes("first name")) {
         
       firstNameKey = key;
       for (let i = 0; i < ds2.length; i++) {
       if (ds2[i].includes('First Name') && i + 1 < ds2.length) {
-      const completeName = ds2[i + 1];
-      return { firstName: ds1[firstNameKey] };
+      
+      //return { firstName: ds1[firstNameKey] };
+      details["firstName"] = ds1[firstNameKey] 
+      
+      return details
     }
   }
     }
-    else if (lowerKey.includes("name")) {
+     if (lowerKey.includes("name")) {
         
       name = key;
       for (let i = 0; i < ds2.length; i++) {
       if (ds2[i].includes('name') && i + 1 < ds2.length) {
-      const completeName = ds2[i + 1];
-      return { name: ds1[name] };
+      
+      //return { name: ds1[name] };
+      details["name"] = ds1[name] 
+      
+      return details
+    }
+  }
+    }
+    if (lowerKey.includes("names")) {
+        
+      names = key;
+      for (let i = 0; i < ds2.length; i++) {
+      if (ds2[i].includes('names') && i + 1 < ds2.length) {
+      
+      //return { name: ds1[name] };
+      details["names"] = ds1[names] 
+      
+      return details
     }
   }
     }
@@ -442,15 +468,15 @@ app.post(
         if(checkValue.hasOwnProperty("surname"))
         {
           lightData["Surname"] = checkValue["surname"]
-        }else if(checkValue.hasOwnProperty("givenname"))
+        }if(checkValue.hasOwnProperty("givenname"))
         {
           lightData["Given Name"] = checkValue["givenname"]
         }
-        else if(checkValue.hasOwnProperty("firstName"))
+        if(checkValue.hasOwnProperty("firstName"))
         {
           lightData["Given Name"] = checkValue["firstName"]
         }
-        else if(checkValue.hasOwnProperty("name"))
+        if(checkValue.hasOwnProperty("name"))
         {
           lightData["Given Name"] = checkValue["name"]
         }
