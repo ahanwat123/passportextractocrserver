@@ -467,7 +467,8 @@ app.post(
       console.log(csvData);
       console.log(textData);
       //console.log(a)
-      const lightData = process_data(jsonData);
+      const lightData = JSON.parse(jsonData);
+      const myData = process_data(csvData)
       //---------------------------------------------------
       // if(containsUnitedArabEmirates(textData)==true)
       // {
@@ -479,7 +480,7 @@ app.post(
       //  lightData["Expiry Date"] = realData.ExpiryDate
       // }
       //-----------------------------------------------
-      const checkValue = findSurnameOrGivenNameOrFirstName(csvData, textData)
+      const checkValue = findSurnameOrGivenNameOrFirstName(myData, textData)
       if(checkValue != false)
       { 
         lightData["Surname"] = "";
