@@ -289,6 +289,7 @@ function findSurnameOrGivenNameOrFirstName(ds1, ds2) {
   let surnameKey = null;
   let givenNameKey = null;
   let firstNameKey = null;
+  let name = null;
 
   // Search for keys containing "Surname," "Given Name," or "Name" in ds1
   for (const key in ds1) {
