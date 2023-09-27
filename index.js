@@ -285,6 +285,23 @@ async function extractTextFromDocument(buffer) {
     throw error;
   }
 }
+async function process_data(csvData) {
+  try {
+    const jsonArray = await csv().fromString(csvData);
+    const cleanedData = jsonArray.reduce((result, item) => {
+      const key = item["Key"];
+      const value = item["Value"];
+      result[key.trim()] = value.trim();
+      return result;
+    }, {});
+
+    const data = JSON.stringify(cleanedData, null, 2);
+    //console.log(data);
+  } catch (error) {
+    console.error("Error converting CSV to JSON:", error.message);
+    return null;
+  }
+}
 function findSurnameOrGivenNameOrFirstName(ds1, ds2) {
   let surnameKey = null;
   let givenNameKey = null;
@@ -450,7 +467,7 @@ app.post(
       console.log(csvData);
       console.log(textData);
       //console.log(a)
-      const lightData = JSON.parse(jsonData)
+      const lightData = process_data(jsonData);
       //---------------------------------------------------
       // if(containsUnitedArabEmirates(textData)==true)
       // {
