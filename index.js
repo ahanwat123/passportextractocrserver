@@ -285,34 +285,56 @@ async function extractTextFromDocument(buffer) {
     throw error;
   }
 }
-function findSurnameOrGivenName(ds1, ds2) {
+function findSurnameOrGivenNameOrFirstName(ds1, ds2) {
   let surnameKey = null;
   let givenNameKey = null;
+  let firstNameKey = null;
 
-  // Search for keys containing "Surname" or "Given Name" in ds1
+  // Search for keys containing "Surname," "Given Name," or "Name" in ds1
   for (const key in ds1) {
-    if (key.includes("Surname")) {
+    const lowerKey = key.toLowerCase(); // Convert the key to
+    if (lowerKey.includes("surname")) {
       surnameKey = key;
-      break;
-    } else if (key.includes("Given Name") || key.includes("Name")) {
+      for (let i = 0; i < ds2.length; i++) {
+    if (ds2[i].includes('Surname') && i + 1 < ds2.length) {
+      const completeName = ds2[i + 1];
+      return { surname: ds1[surnameKey] };
+    }}
+    } else if (lowerKey.includes("given name")) {
       givenNameKey = key;
+      for (let i = 0; i < ds2.length; i++) {
+     if ((ds2[i].includes('given Name') || ds2[i].includes(' given Name')) && i + 1 < ds2.length) {
+      { givenname: ds1[givenNameKey] }
+    } }
+    } else if (lowerKey.includes("first name")) {
+        
+      firstNameKey = key;
+      for (let i = 0; i < ds2.length; i++) {
+      if (ds2[i].includes('First Name') && i + 1 < ds2.length) {
+      const completeName = ds2[i + 1];
+      return { firstName: ds1[firstNameKey] };
+    }
+  }
+    }
+    else if (lowerKey.includes("name")) {
+        
+      name = key;
+      for (let i = 0; i < ds2.length; i++) {
+      if (ds2[i].includes('name') && i + 1 < ds2.length) {
+      const completeName = ds2[i + 1];
+      return { name: ds1[name] };
+    }
+  }
     }
   }
 
   // If we found a "Surname" key, return its value
-  if (surnameKey !== null) {
-      const temp = ds1[surnameKey]
-    return {surnameKey: temp};
-  }
+  
 
-  // If we found a "Given Name" or "Name" key, return its value
-  if (givenNameKey !== null) {
-      const temp = ds1[givenNameKey]
-    return {name: temp};
-  }
+  // Search for a pattern indicating the start of the corresponding section in ds2
+  
 
-  // If neither key was found, return the complete name from ds2
-  return false; 
+  return false; // Neither key nor complete name section found
 }
 function containsUnitedArabEmirates(arr) {
   return arr.includes('UNITED ARAB EMIRATES');
@@ -413,17 +435,25 @@ app.post(
       //  lightData["Expiry Date"] = realData.ExpiryDate
       // }
       //-----------------------------------------------
-      const checkValue = findSurnameOrGivenName(csvData, textData)
+      const checkValue = findSurnameOrGivenNameOrFirstName(csvData, textData)
       if(checkValue != false)
       {
-        if(checkValue.hasOwnProperty("surnameKey"))
+        if(checkValue.hasOwnProperty("surname"))
         {
-          lightData["Surname"] = checkValue["surnameKey"]
+          lightData["Surname"] = checkValue["surname"]
+        }if(checkValue.hasOwnProperty("givenname"))
+        {
+          lightData["Given Name"] = checkValue["givenname"]
         }
-        else{
+        if(checkValue.hasOwnProperty("firstName"))
+        {
+          lightData["Given Name"] = checkValue["firstName"]
+        }
+        if(checkValue.hasOwnProperty("name"))
+        {
           lightData["Given Name"] = checkValue["name"]
-          lightData["Surname"] = " "
         }
+        
       }
      // console.log(result);
       if (csvData) {
