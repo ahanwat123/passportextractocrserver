@@ -479,7 +479,8 @@ app.post(
       });
       const myData = await process_data(csvData1)
       console.log(myData)
-      const checkValue = findSurnameOrGivenNameOrFirstName(myData, textData)
+      const pure = JSON.parse(myData)
+      const checkValue = findSurnameOrGivenNameOrFirstName(pure, textData)
       console.log(checkValue)
       if(checkValue != false)
       { 
