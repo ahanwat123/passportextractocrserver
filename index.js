@@ -462,7 +462,7 @@ app.post(
       console.log(csvData);
       console.log(textData);
       //console.log(a)
-      const lightData = JSON.parse(jsonData);
+      const lightData = jsonData;
       
       //---------------------------------------------------
       // if(containsUnitedArabEmirates(textData)==true)
