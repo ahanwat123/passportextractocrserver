@@ -444,6 +444,7 @@ app.post(
       const csvData = await extractKeyValuePairsFromDocument(buffer);
       const textData = await extractTextFromDocument(buffer);
       const jsonData = await callChatGPTAPI(csvData, textData);
+      console.log(typeof(textData))
       console.log(csvData);
       console.log(textData);
       //console.log(a)
