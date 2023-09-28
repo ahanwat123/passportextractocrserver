@@ -416,7 +416,7 @@ async function callChatGPTAPI(data1, data2) {
     const response = await axios.post(
       apiUrl,
       {
-        model: "gpt-3.5",
+        model: "gpt-3.5-turbo",
         temperature: 0,
         top_p: 0,
         messages: conversation,
