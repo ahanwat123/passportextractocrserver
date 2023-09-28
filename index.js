@@ -306,77 +306,57 @@ function findSurnameOrGivenNameOrFirstName(ds1, ds2) {
   let surnameKey = null;
   let givenNameKey = null;
   let firstNameKey = null;
-  let name = null;
-  let names = null;
-  let details = {}
+  let nameKey = null;
+  let lastNameKey = null;
+  let namesKey = null;
+  let details = {};
 
-  // Search for keys containing "Surname," "Given Name," or "Name" in ds1
+  // Search for keys containing "Surname," "Given Name," "First Name," "Name," "Last Name," or "Names" in ds1
   for (const key in ds1) {
-    const lowerKey = key.toLowerCase(); // Convert the key to
+    const lowerKey = key.toLowerCase();
     if (lowerKey.includes("surname")) {
       surnameKey = key;
-      for (let i = 0; i < ds2.length; i++) {
-    if (ds2[i].includes('Surname')) {
-      
-      details["surname"] = ds1[surnameKey]
-      //return { surname: ds1[surnameKey] };
-      return details
-    }}
-    } if (lowerKey.includes("given name")) {
+    } else if (lowerKey.includes("given name")) {
       givenNameKey = key;
-      for (let i = 0; i < ds2.length; i++) {
-     if ((ds2[i].includes('given name')) ) {
-     // return { givenname: ds1[givenNameKey] }
-      details["givenname"] = ds1[givenNameKey] 
-     
-      return details
-    } }
-    } if (lowerKey.includes("first name")) {
-        
+    } else if (lowerKey.includes("first name")) {
       firstNameKey = key;
-      for (let i = 0; i < ds2.length; i++) {
-      if (ds2[i].includes('First Name') ) {
-      
-      //return { firstName: ds1[firstNameKey] };
-      details["firstName"] = ds1[firstNameKey] 
-      
-      return details
-    }
-  }
-    }
-     if (lowerKey.includes("name")) {
-        
-      name = key;
-      for (let i = 0; i < ds2.length; i++) {
-      if (ds2[i].includes('name')) {
-      
-      //return { name: ds1[name] };
-      details["name"] = ds1[name] 
-      
-      return details
-    }
-  }
-    }
-    if (lowerKey.includes("names")) {
-        
-      names = key;
-      for (let i = 0; i < ds2.length; i++) {
-      if (ds2[i].includes('names')) {
-      
-      //return { name: ds1[name] };
-      details["names"] = ds1[names] 
-      
-      return details
-    }
-  }
+    } else if (lowerKey.includes("name")) {
+      nameKey = key;
+    } else if (lowerKey.includes("last name")) {
+      lastNameKey = key;
+    } else if (lowerKey.includes("names")) {
+      namesKey = key;
     }
   }
 
-  // If we found a "Surname" key, return its value
-  
+  // Search for "Surname," "Given Name," "First Name," "Name," "Last Name," and "Names" in ds2
+  for (let i = 0; i < ds2.length; i++) {
+    if (ds2[i].includes('Surname') && surnameKey) {
+      details["surname"] = ds1[surnameKey];
+    } else if (ds2[i].includes('Given Name') && givenNameKey) {
+      details["givenname"] = ds1[givenNameKey];
+    } else if (ds2[i].includes('First Name') && firstNameKey) {
+      details["firstname"] = ds1[firstNameKey];
+    } else if (ds2[i].includes('Name') && nameKey) {
+      details["name"] = ds1[nameKey];
+    } else if (ds2[i].includes('Last Name') && lastNameKey) {
+      details["lastname"] = ds1[lastNameKey];
+    } else if (ds2[i].includes('Names') && namesKey) {
+      details["names"] = ds1[namesKey];
+    }
+  }
 
-  // Search for a pattern indicating the start of the corresponding section in ds2
-  
+  // If at least one of "Surname," "Given Name," "First Name," "Name," "Last Name," or "Names" is found, return the details
+  if (
+    details["surname"] ||
+    details["givenname"] ||
+    details["firstname"] ||
+    details["name"] ||
+    details["lastname"] ||
+    details["names"]
+  ) {
+    return details;
+  }
 
   return false; // Neither key nor complete name section found
 }
@@ -506,6 +486,14 @@ app.post(
         if(checkValue.hasOwnProperty("name"))
         {
           lightData["Given Name"] = checkValue["name"]
+        }
+        if(checkValue.hasOwnProperty("names"))
+        {
+          lightData["Given Name"] = checkValue["names"]
+        }
+        if(checkValue.hasOwnProperty("firstname"))
+        {
+          lightData["iGven Name"] = checkValue["firstname"]
         }
         
       }
