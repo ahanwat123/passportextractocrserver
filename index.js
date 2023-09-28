@@ -454,7 +454,7 @@ app.post(
 
       const buffer = req.file.buffer;
       const csvData = await extractKeyValuePairsFromDocument(buffer);
-      const textData = await extractTextFromDocument1(buffer);
+      const textData = await extractTextFromDocument(buffer);
       const jsonData = await callChatGPTAPI(csvData, textData);
       console.log(typeof(textData))
       console.log(csvData);
@@ -473,44 +473,44 @@ app.post(
       //  lightData["Expiry Date"] = realData.ExpiryDate
       // }
       //-----------------------------------------------
-      let csvData1 = "Key,Value\n";
-      Object.entries(csvData).forEach(([key, value]) => {
-        csvData1 += `${key},${value}\n`;
-      });
-      const myData = await process_data(csvData1)
-      console.log(myData)
-      const pure = JSON.parse(myData)
-      const checkValue = findSurnameOrGivenNameOrFirstName(pure, textData)
-      console.log(checkValue)
-      if(checkValue != false)
-      { 
-        lightData["Surname"] = "";
-        lightData["Given Name"] = "";
-        if(checkValue.hasOwnProperty("surname"))
-        {
-          lightData["Surname"] = checkValue["surname"]
-        }if(checkValue.hasOwnProperty("givenname"))
-        {
-          lightData["Given Name"] = checkValue["givenname"]
-        }
-        if(checkValue.hasOwnProperty("firstName"))
-        {
-          lightData["Given Name"] = checkValue["firstName"]
-        }
-        if(checkValue.hasOwnProperty("name"))
-        {
-          lightData["Given Name"] = checkValue["name"]
-        }
-        if(checkValue.hasOwnProperty("names"))
-        {
-          lightData["Given Name"] = checkValue["names"]
-        }
-        if(checkValue.hasOwnProperty("firstname"))
-        {
-          lightData["iGven Name"] = checkValue["firstname"]
-        }
+      //  csvData1 = "Key,Value\n";
+      // Object.entries(csvData).forEach(([key, value]) => {
+      //   csvData1 += `${key},${value}\n`;
+      // });
+      // const myData = await process_data(csvData1)
+      // console.log(myData)
+      // const pure = JSON.parse(myData)
+      // const checkValue = findSurnameOrGivenNameOrFirstName(pure, textData)
+      // console.log(checkValue)
+      // if(checkValue != false)
+      // { 
+      //   lightData["Surname"] = "";
+      //   lightData["Given Name"] = "";
+      //   if(checkValue.hasOwnProperty("surname"))
+      //   {
+      //     lightData["Surname"] = checkValue["surname"]
+      //   }if(checkValue.hasOwnProperty("givenname"))
+      //   {
+      //     lightData["Given Name"] = checkValue["givenname"]
+      //   }
+      //   if(checkValue.hasOwnProperty("firstName"))
+      //   {
+      //     lightData["Given Name"] = checkValue["firstName"]
+      //   }
+      //   if(checkValue.hasOwnProperty("name"))
+      //   {
+      //     lightData["Given Name"] = checkValue["name"]
+      //   }
+      //   if(checkValue.hasOwnProperty("names"))
+      //   {
+      //     lightData["Given Name"] = checkValue["names"]
+      //   }
+      //   if(checkValue.hasOwnProperty("firstname"))
+      //   {
+      //     lightData["iGven Name"] = checkValue["firstname"]
+      //   }
         
-      }
+      // }let
      // console.log(result);
       if (csvData) {
         console.log(jsonData)
