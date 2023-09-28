@@ -325,7 +325,7 @@ function findSurnameOrGivenNameOrFirstName(ds1, ds2) {
     } if (lowerKey.includes("given name")) {
       givenNameKey = key;
       for (let i = 0; i < ds2.length; i++) {
-     if ((ds2[i].includes('given Name')) && i + 1 < ds2.length) {
+     if ((ds2[i].includes('given name')) && i + 1 < ds2.length) {
      // return { givenname: ds1[givenNameKey] }
       details["givenname"] = ds1[givenNameKey] 
      
@@ -468,7 +468,7 @@ app.post(
       console.log(textData);
       //console.log(a)
       const lightData = JSON.parse(jsonData);
-      const myData = process_data(csvData)
+      
       //---------------------------------------------------
       // if(containsUnitedArabEmirates(textData)==true)
       // {
@@ -480,6 +480,11 @@ app.post(
       //  lightData["Expiry Date"] = realData.ExpiryDate
       // }
       //-----------------------------------------------
+      let csvData1 = "Key,Value\n";
+      Object.entries(csvData).forEach(([key, value]) => {
+        csvData += `${key},${value}\n`;
+      });
+      const myData = process_data(csvData1)
       const checkValue = findSurnameOrGivenNameOrFirstName(myData, textData)
       if(checkValue != false)
       { 
