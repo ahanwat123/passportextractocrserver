@@ -296,7 +296,7 @@ async function process_data(csvData) {
     }, {});
 
     const data = JSON.stringify(cleanedData, null, 2);
-    //console.log(data);
+    return data;
   } catch (error) {
     console.error("Error converting CSV to JSON:", error.message);
     return null;
