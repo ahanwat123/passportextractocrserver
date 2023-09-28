@@ -316,8 +316,8 @@ function findSurnameOrGivenNameOrFirstName(ds1, ds2) {
     if (lowerKey.includes("surname")) {
       surnameKey = key;
       for (let i = 0; i < ds2.length; i++) {
-    if (ds2[i].includes('Surname') && i + 1 < ds2.length) {
-      const completeName = ds2[i + 1];
+    if (ds2[i].includes('Surname')) {
+      
       details["surname"] = ds1[surnameKey]
       //return { surname: ds1[surnameKey] };
       return details
@@ -325,7 +325,7 @@ function findSurnameOrGivenNameOrFirstName(ds1, ds2) {
     } if (lowerKey.includes("given name")) {
       givenNameKey = key;
       for (let i = 0; i < ds2.length; i++) {
-     if ((ds2[i].includes('given name')) && i + 1 < ds2.length) {
+     if ((ds2[i].includes('given name')) ) {
      // return { givenname: ds1[givenNameKey] }
       details["givenname"] = ds1[givenNameKey] 
      
@@ -335,7 +335,7 @@ function findSurnameOrGivenNameOrFirstName(ds1, ds2) {
         
       firstNameKey = key;
       for (let i = 0; i < ds2.length; i++) {
-      if (ds2[i].includes('First Name') && i + 1 < ds2.length) {
+      if (ds2[i].includes('First Name') ) {
       
       //return { firstName: ds1[firstNameKey] };
       details["firstName"] = ds1[firstNameKey] 
@@ -348,7 +348,7 @@ function findSurnameOrGivenNameOrFirstName(ds1, ds2) {
         
       name = key;
       for (let i = 0; i < ds2.length; i++) {
-      if (ds2[i].includes('name') && i + 1 < ds2.length) {
+      if (ds2[i].includes('name')) {
       
       //return { name: ds1[name] };
       details["name"] = ds1[name] 
@@ -361,7 +361,7 @@ function findSurnameOrGivenNameOrFirstName(ds1, ds2) {
         
       names = key;
       for (let i = 0; i < ds2.length; i++) {
-      if (ds2[i].includes('names') && i + 1 < ds2.length) {
+      if (ds2[i].includes('names')) {
       
       //return { name: ds1[name] };
       details["names"] = ds1[names] 
