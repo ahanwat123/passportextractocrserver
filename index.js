@@ -485,6 +485,7 @@ app.post(
         csvData1 += `${key},${value}\n`;
       });
       const myData = process_data(csvData1)
+      console.log(myData)
       const checkValue = findSurnameOrGivenNameOrFirstName(myData, textData)
       if(checkValue != false)
       { 
