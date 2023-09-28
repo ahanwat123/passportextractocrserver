@@ -482,7 +482,7 @@ app.post(
       //-----------------------------------------------
       let csvData1 = "Key,Value\n";
       Object.entries(csvData).forEach(([key, value]) => {
-        csvData += `${key},${value}\n`;
+        csvData1 += `${key},${value}\n`;
       });
       const myData = process_data(csvData1)
       const checkValue = findSurnameOrGivenNameOrFirstName(myData, textData)
